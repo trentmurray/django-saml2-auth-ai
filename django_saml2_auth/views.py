@@ -40,8 +40,6 @@ if parse_version(get_version()) >= parse_version('1.7'):
 else:
     from django.utils.module_loading import import_by_path as import_string
 
-user_model = get_user_model()
-
 
 def get_current_domain(r):
     if 'ASSERTION_URL' in settings.SAML2_AUTH:
@@ -143,7 +141,7 @@ def denied(r):
 def _create_new_user(user_identity):
     attributes_map = settings.SAML2_AUTH.get('ATTRIBUTES_MAP', {})
     user_name = user_identity[attributes_map.get('username', 'UserName')][0]
-    user = user_model.objects.create_user(user_name)
+    user = User.objects.create_user(user_name)
     for (user_attr, saml_attr) in attributes_map.items():
         if user_attr != 'username':
             values = user_identity.get(saml_attr)
@@ -189,10 +187,10 @@ def acs(r):
     is_new_user = False
 
     try:
-        target_user = user_model.objects.get(username=user_name)
+        target_user = User.objects.get(username=user_name)
         if settings.SAML2_AUTH.get('TRIGGER', {}).get('BEFORE_LOGIN', None):
             import_string(settings.SAML2_AUTH['TRIGGER']['BEFORE_LOGIN'])(target_user, user_identity)
-    except user_model.DoesNotExist:
+    except User.DoesNotExist:
         new_user_should_be_created = settings.SAML2_AUTH.get('CREATE_USER', True)
         if new_user_should_be_created: 
             target_user = _create_new_user(user_identity)
