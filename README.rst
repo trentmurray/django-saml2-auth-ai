@@ -124,6 +124,7 @@ How to use?
 
             # Optional settings below
             'DEFAULT_NEXT_URL': '/admin',  # Custom target redirect URL after the user get logged in. Default to /admin if not set. This setting will be overwritten if you have parameter ?next= specificed in the login URL.
+            'CREATE_USER': 'TRUE', # Create a new Django user when a new user logs in. Defaults to True.
             'NEW_USER_PROFILE': {
                 'USER_GROUPS': [],  # The default group name when a new user logs in
                 'ACTIVE_STATUS': True,  # The default active status for new users
@@ -141,6 +142,8 @@ How to use?
                 'BEFORE_LOGIN': 'path.to.your.login.hook.method',
             },
             'ASSERTION_URL': 'https://mysite.com', # Custom URL to validate incoming SAML requests against
+            'USE_JWT': False, # Set this to True if you are running a Single Page Application (SPA) with Django Rest Framework (DRF), and are using JWT authentication to authorize client users
+            'FRONTEND_URL': 'https://myfrontendclient.com', # Redirect URL for the client if you are using JWT auth with DRF. See explanation below
         }
 
 #. In your SAML2 SSO identity provider, set the Single-sign-on URL and Audience
@@ -149,6 +152,10 @@ How to use?
 
 Explanation
 ~~~~~~~~~~~
+
+**METADATA_LOCAL_FILE_PATH** SAML2 metadata configuration file path
+
+**CREATE_USER** Determines if a new Django user should be created for new users.
 
 **NEW_USER_PROFILE** Default settings for newly created users
 
@@ -177,6 +184,12 @@ django-saml2-auth will validate the SAML response's Service Provider address
 against the actual HTTP request's host and scheme. If this value is set, it
 will validate against ASSERTION_URL instead - perfect for when django running
 behind a reverse proxy.
+
+**USE_JWT** Set this to the boolean True if you are using Django Rest Framework with JWT authentication
+
+**FRONTEND_URL** If USE_JWT is True, you should set the URL of where your frontend is located (will default to DEFAULT_NEXT_URL if you fail to do so). Once the client is authenticated through the SAML/SSO, your client is redirected to the FRONTEND_URL with the user id (uid) and JWT token (token) as query parameters.
+Example: 'https://myfrontendclient.com/?uid=<user id>&token=<jwt token>'
+With these params your client can now authenticate will server resources.
 
 Customize
 ---------

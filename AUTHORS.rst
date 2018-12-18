@@ -21,3 +21,6 @@ List of Authors and Contributors
 - `BaconAndEggs <https://github.com/BaconAndEggs>`_
 - `Tuomas Suutari <https://github.com/suutari-ai>`_ (Anders Innovations)
 - `Toni Leino <https://github.com/Frodotus>`_ (Anders Innovations)
+- `Ryan Mahaffey <https://github.com/mahaffey>`_
+- `ayr-ton <https://github.com/ayr-ton>`_
+_ `kevPo <https://github.com/kevPo>`_
