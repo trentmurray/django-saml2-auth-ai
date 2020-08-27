@@ -1,11 +1,13 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 from . import views
+
+from .views import AscView
 
 app_name = "django_saml2_auth"
 
 urlpatterns = [
-    url(r"^acs/$", views.acs, name="acs"),
-    url(r"^welcome/$", views.welcome, name="welcome"),
-    url(r"^denied/$", views.denied, name="denied"),
-    url(r"^finish-logout/$", views.finish_signout, name="finish-logout"),
+    re_path(r"^sso/acs/(?P<configuration_id>[a-z0-9\-]+)/$", AscView.as_view(), name="acs"),
+    re_path(r"^sso/auth/$", Sso.as_view(), name='sso-auth'),
+    re_path(r"^sso/slo/$", Slo.as_view(), name='sso-slo'),
+
 ]
