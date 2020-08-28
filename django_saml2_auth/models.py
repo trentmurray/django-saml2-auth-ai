@@ -18,9 +18,11 @@ class Configuration(models.Model):
     uuid = models.UUIDField(_('UUID'), primary_key=True, default=uuid4, editable=False)
     name = models.TextField(_('name'))
 
+    idp_entity_id = models.TextField(_('idp identity id'), null=True, blank=False)
     idp_sso_url = models.TextField(_('idp sso url'), null=True, blank=False)
     idp_slo_url = models.TextField(_('idp slo url'), null=True, blank=False)
     idp_certificate = models.TextField(_('idp certificate'), null=True, blank=False)
+    relay_state = models.TextField(_('relay state'), null=True, blank=False)
 
     provision_users = models.BooleanField(_('provision users'), default=False)
 

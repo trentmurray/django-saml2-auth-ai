@@ -1,6 +1,7 @@
 from django.conf import settings
 
 from django.http.request import HttpRequest
+from django.shortcuts import redirect
 from collections import Mapping
 
 from saml2.client import Saml2Client
@@ -8,7 +9,6 @@ from saml2.config import Config as Saml2Config
 from saml2 import (
     BINDING_HTTP_POST,
     BINDING_HTTP_REDIRECT,
-    entity,
 )
 
 from .models import Configuration
@@ -30,15 +30,20 @@ def merge_dict(dict1, dict2):
 
 
 def get_saml_client(request: HttpRequest, configuration: Configuration):
-    asc_url = request.path
+    acs_url = "{scheme}://{host}/{endpoint_prefix}sso/acs/{configuration_id}/".format(
+        scheme="https" if request.is_secure() else "http",
+        host=request.get_host(),
+        endpoint_prefix=settings.SAML2_GLOBAL_CONFIG.get('ENDPOINT_PREFIX', ''),
+        configuration_id=str(configuration.uuid)
+    )
 
     saml_settings = {
         'service': {
             'sp': {
                 'endpoints': {
                     'assertion_consumer_service': [
-                        (asc_url, BINDING_HTTP_REDIRECT),
-                        (asc_url, BINDING_HTTP_POST)
+                        (acs_url, BINDING_HTTP_REDIRECT),
+                        (acs_url, BINDING_HTTP_POST)
                     ]
                 }
             },
@@ -57,7 +62,5 @@ def get_saml_client(request: HttpRequest, configuration: Configuration):
     sp_config.allow_unknown_attributes = True
 
     return Saml2Client(config=sp_config)
-
-
 
 
