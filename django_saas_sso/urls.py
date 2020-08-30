@@ -2,7 +2,7 @@ from django.urls import re_path
 from django.conf import settings
 from .views import AcsView, Sso
 
-app_name = "django_saml2_auth"
+app_name = "django_saas_sso"
 
 urlpatterns = [
     re_path(

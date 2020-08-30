@@ -1,29 +1,26 @@
-Django SAML2 Authentication AI
-==============================
+Django Saas SSO (SAML2)
+=======================
+
+This plugin provides a way for SaaS applications to support Single Sign-On via SAML2 to their tenants.
 
 This project aims to provide a dead simple way to integrate SAML2
-Authentication into your Django powered app. Try it now, and get rid of the
-complicated configuration of SAML.
+Authentication into your Django powered SaaS app.
 
 Any SAML2 based SSO (Single-Sign-On) identity provider with dynamic metadata
-configuration is supported by this Django plugin, for example Okta.
+configuration is supported by this Django plugin.
+
+Originally designed for integration between OneLogin, but will work with any IdP.
 
 This project is a fork of django-saml2-auth_ by `Fang Li`_.
 
 .. _django-saml2-auth: https://github.com/fangli/django-saml2-auth
 .. _`Fang Li`: https://github.com/fangli
 
-|PyPI|
-
-.. |PyPI| image::
-   https://img.shields.io/pypi/v/django-saml2-auth-ai.svg
-   :target: https://pypi.org/project/django-saml2-auth-ai/
-
 
 Dependencies
 ------------
 
-This plugin is compatible with Django 1.8, 1.9, 1.10, 1.11, and 2.0.
+This plugin is compatible with Django 2+.
 The `pysaml2` Python module is required.
 
 
@@ -34,14 +31,14 @@ You can install this plugin via `pip`:
 
 .. code-block:: bash
 
-    # pip install django-saml2-auth-ai
+    # pip install django-saas-sso
 
 or from source:
 
 .. code-block:: bash
 
-    # git clone https://github.com/andersinno/django-saml2-auth-ai
-    # cd django-saml2-auth-ai
+    # git clone https://github.com/trentmurray/django-saas-sso
+    # cd django-saas-sso
     # python setup.py install
 
 xmlsec is also required by pysaml2:
@@ -51,17 +48,30 @@ xmlsec is also required by pysaml2:
     # yum install xmlsec1
     // or
     # apt install xmlsec1
+    // or on Alpine
+    # apk install xmlsec
 
 
 What does this plugin do?
 -------------------------
 
-This plugin takes over Django's login page and redirect the user to a SAML2
-SSO authentication service. Once the user is logged in and redirected back,
-the plugin will check if the user is already in the system. If not, the user
-will be created using Django's default UserModel, otherwise the user will be
-redirected to their last visited page.
+This plugin provides additional endpoints to support customisable single sign on
+for your SaaS application's tenants.
 
+In addition to the sign-in/sign-out endpoints, it supports a number of hooks to
+hijack user provisioning, and sign-on in the event you have custom work to before
+logging a user in, or in other cases you may be generating a token rather than
+a session.
+
+
+How does it work
+----------------
+
+The plugin works by holding tenant IdP settings in a configuration table. This
+table has a Foreign Key to your tenant identifier.
+
+If your multi-tenancy does not work in this way, then this plugin won't work
+for you.
 
 
 How to use?
@@ -71,26 +81,7 @@ How to use?
 
     .. code-block:: python
 
-        import django_saml2_auth.views
-
-#. Override the default login page in the root urls.py file, by adding these
-   lines **BEFORE** any `urlpatterns`:
-
-    .. code-block:: python
-
-        # These are the SAML2 related URLs. You can change "^saml2_auth/" regex to
-        # any path you want, like "^sso_auth/", "^sso_login/", etc. (required)
-        url(r'^saml2_auth/', include('django_saml2_auth.urls')),
-
-        # The following line will replace the default user login with SAML2 (optional)
-        # If you want to specific the after-login-redirect-URL, use parameter "?next=/the/path/you/want"
-        # with this view.
-        url(r'^accounts/login/$', django_saml2_auth.views.signin),
-
-        # The following line will replace the admin login with SAML2 (optional)
-        # If you want to specific the after-login-redirect-URL, use parameter "?next=/the/path/you/want"
-        # with this view.
-        url(r'^admin/login/$', django_saml2_auth.views.signin),
+        from django_saas_sso.views import AcsView, Sso, Slo
 
 #. Add 'django_saml2_auth' to INSTALLED_APPS
 
@@ -145,8 +136,11 @@ How to use?
             'ASSERTION_URL': 'https://mysite.com', # Custom URL to validate incoming SAML requests against
         }
 
-#. In your SAML2 SSO identity provider, set the Single-sign-on URL and Audience
-   URI(SP Entity ID) to http://your-domain/saml2_auth/acs/
+#. After configuring the settings above, run
+.. code-block:: bash
+
+    python manage.py makemigrations django_saas_sso
+
 
 
 Explanation

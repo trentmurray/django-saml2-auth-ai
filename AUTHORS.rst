@@ -1,15 +1,17 @@
-Authors of Django SAML2 Auth AI
-===============================
+Authors of Django SaaS SSO (Single Sign On)
+===========================================
 
-This project is based on Django SAML2 Auth which is written by
+This project was originally forked from Django SAML2 Auth which is written by
 `Fang Li <https://github.com/fangli>`_ and various contributors.
 
-The Django SAML2 Auth AI fork is maintained by
-`Anders Innovations <https://www.anders.fi/en/>`_.
 
-List of Authors and Contributors
---------------------------------
+List of current Authors and Contributors
+----------------------------------------
+- `Trent Murray <https://github.com/trentmurray>`_
 
+
+List of previous Authors and Contributors
+-----------------------------------------
 - `Fang Li <https://github.com/fangli>`_
 - `DSpeichert <https://github.com/DSpeichert>`_
 - `jacobh <https://github.com/jacobh>`_

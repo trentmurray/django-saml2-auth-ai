@@ -13,16 +13,16 @@ with open(path.join(here, 'README.rst'), 'rb') as f:
     long_description = f.read().decode('utf-8')
 
 setup(
-    name='django-saml2-auth-ai',
-    version='2.1.6',
+    name='django-saas-sso',
+    version='1.0.0',
 
-    description='Django SAML2 Authentication AI',
+    description='Django SaaS SSO (SAML2)',
     long_description=long_description,
 
-    url='https://github.com/andersinno/django-saml2-auth-ai',
+    url='https://github.com/trentmurray/django-saas-sso/',
 
-    author='Anders Innovations',
-    author_email='info@anders.fi',
+    author='Trent Murray',
+    author_email='trent@mainmast.io',
 
     license='Apache 2.0',
 
@@ -54,10 +54,12 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
 
-    keywords='Django, SAML2, authentication, SSO',
+    keywords='Django, SAML2, authentication, SSO, SaaS',
 
     packages=find_packages(),
 
-    install_requires=['pysaml2>=4.5.0'],
+    install_requires=[
+        'pysaml2>=6.1.0'
+    ],
     include_package_data=True,
 )
